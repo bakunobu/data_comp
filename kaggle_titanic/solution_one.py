@@ -2,7 +2,7 @@
 Just add two more features from the dataset to my baseline solution:
 - 'SibSp';
 - 'Parch'
-Accuracy: 0.72966
+Accuracy: 0.72488
 Position: ~15750
 """
 
