@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score, KFold
 
 
-titanic_df = pd.read_csv('dataset/train.csv')
+titanic_df = pd.read_csv('kaggle_titanic/dataset/train.csv')
 
 
 def make_df(input_df:pd.DataFrame, columns:list) -> pd.DataFrame:
@@ -46,7 +46,7 @@ tree_clf = DecisionTreeClassifier()
 cv = KFold(n_splits=10, shuffle=True, random_state=7)
 
 scores = cross_val_score(tree_clf, X_train, y_train,
-                         scoring='f1', cv=cv,
+                         scoring='accuracy', cv=cv,
                          n_jobs=-1)
 
 print(scores)
