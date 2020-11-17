@@ -13,13 +13,13 @@ grid_params ={'criterion': ['gini', 'entropy'],
               'splitter': ['best', 'random'],
               'max_depth': range(1, 12),
               'min_samples_split': range(2, 25),
-              'min_samples_leaf': range(1,12),
+              'min_samples_leaf': range(1,12), 
               'max_features': ['auto', 'sqrt', 'log2'],
-              'max_leaf_nodes': [None, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+              'max_leaf_nodes': [None, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
 
 
 
-titanic_df = pd.read_csv('kaggle_titanic/dataset/train.csv')
+titanic_df = pd.read_csv('dataset/train.csv')
 
 
 def make_df(input_df:pd.DataFrame, columns:list) -> pd.DataFrame:
