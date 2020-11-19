@@ -2,6 +2,9 @@
 Replacing all the records, that contains NaN in from the set
 
 Gives result 0.77272 that is ~ 10380 position on the Leaderboard
+
+New best_params (not really) - gives result 0.73444
+{'max_depth': 6, 'max_leaf_nodes': 7, 'min_samples_leaf': 3, 'min_samples_split': 22}
 """
 
 import numpy as np
@@ -11,6 +14,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score, KFold
+from sklearn.model_selection import GridSearchCV
+
 
 
 # берем датасет
@@ -42,13 +47,38 @@ X_train, X_test, y_train, y_test = train_test_split(train_data, mark,
                                                     test_size=0.25, random_state=0)
 
 
+"""
+grid_param = {'max_depth': [6, 7, 8, 9, 10],
+              'min_samples_split': [22, 23, 24, 25, 26, 27],
+              'min_samples_leaf': [3, 4, 5, 6, 7],
+              'max_leaf_nodes': [5, 6, 7, 8, 9]}
+
+
+tree_clf = DecisionTreeClassifier()
+
+
+search = GridSearchCV(estimator=tree_clf,
+                      param_grid=grid_param,
+                      scoring='accuracy',
+                      n_jobs=-1,
+                      refit=True,
+                      return_train_score=True,
+                      cv=10)
+
+
+search.fit(X_train, y_train)
+
+print(search.best_params_)
+
+
+"""
 # model learning
 tree_clf = DecisionTreeClassifier(criterion='gini',
-                                  max_depth=8,
+                                  max_depth=6,
                                   max_features='auto',
                                   max_leaf_nodes=7,
-                                  min_samples_leaf=5,
-                                  min_samples_split=24,
+                                  min_samples_leaf=3,
+                                  min_samples_split=22,
                                   splitter='best')
 
 cv = KFold(n_splits=10, shuffle=True, random_state=7)
@@ -58,6 +88,8 @@ scores = cross_val_score(tree_clf, X_train, y_train,
                          n_jobs=-1)
 
 tree_clf.fit(X_train, y_train)
+
+ 
 # submit
 
 submit_data = pd.read_csv('dataset/test.csv')
@@ -81,5 +113,5 @@ sub_df['PassengerId'] = submit_data['PassengerId']
 sub_df['Survived'] = pd.Series(pred)
 
 sub_df.to_csv('submit.csv', index=False)
- 
+
  
