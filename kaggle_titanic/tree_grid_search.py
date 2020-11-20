@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
 
 
-grid_params ={'criterion': ['gini', 'entropy'],
+grid_params = {'criterion': ['gini', 'entropy'],
               'splitter': ['best', 'random'],
               'max_depth': range(1, 12),
               'min_samples_split': range(2, 25),
