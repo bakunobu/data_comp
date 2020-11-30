@@ -1,21 +1,18 @@
-"""
-Support vector classifier
-
-All the records, that contains NaN in from the set, are replaced
-
-basic SVC params ~ 0.62679
-
-"""
+'''
+A good improvement for SVC model - 0.76555
+'''
 
 import numpy as np
 import pandas as pd
-from pandas.core.reshape.concat import concat
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_score, KFold
 from sklearn.model_selection import GridSearchCV
 
+
+param_dict = {'penalty': ['l1', 'l2'],
+              'loss': ['hinge', 'squared_hinge'],
+              'C': [0.0001, 0.001, 0.1, 1, 10, 100]}
 
 
 # берем датасет
@@ -47,31 +44,7 @@ X_train, X_test, y_train, y_test = train_test_split(train_data, mark,
                                                     test_size=0.25, random_state=0)
 
 
-svc_clf = SVC()
-
-
-grid_param = {'C': [0.001, 0.01, 0.1, 1, 10],
-              'gamma': [0.001, 0.01, 0.1, 1],
-              'degree': [2, 3, 4, 5, 7, 9],
-              'kernel': ['linear', 'poly', 'rbf', 'sigmoid']}
-
-
-search = GridSearchCV(estimator=svc_clf,
-                      param_grid=grid_param,
-                      scoring='accuracy',
-                      n_jobs=-1,
-                      refit=True,
-                      return_train_score=True,
-                      cv=10)
-
-
-search.fit(X_train, y_train)
-
-print(search.best_params_)
-
-
-""" 
-
+svc_clf = LinearSVC(C=0.1, loss='squared_hinge', penalty='l2')
 
 cv = KFold(n_splits=10, shuffle=True, random_state=7)
 
@@ -79,14 +52,8 @@ scores = cross_val_score(svc_clf, X_train, y_train,
                          scoring='accuracy', cv=cv,
                          n_jobs=-1)
 
-print(scores,
-      np.mean(scores)) """
-"""
 
 svc_clf.fit(X_train, y_train)
-
- 
-# submit
 
 submit_data = pd.read_csv('dataset/test.csv')
 
@@ -109,6 +76,3 @@ sub_df['PassengerId'] = submit_data['PassengerId']
 sub_df['Survived'] = pd.Series(pred)
 
 sub_df.to_csv('submit_svc.csv', index=False)
-
- 
-"""
