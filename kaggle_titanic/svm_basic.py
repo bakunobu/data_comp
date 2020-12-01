@@ -53,7 +53,7 @@ svc_clf = SVC()
 grid_param = {'C': [0.001, 0.01, 0.1, 1, 10],
               'gamma': [0.001, 0.01, 0.1, 1],
               'degree': [2, 3, 4, 5, 7, 9],
-              'kernel': ['linear', 'poly', 'rbf', 'sigmoid']}
+              'kernel': ['poly', 'rbf', 'sigmoid']}
 
 
 search = GridSearchCV(estimator=svc_clf,
@@ -70,9 +70,6 @@ search.fit(X_train, y_train)
 print(search.best_params_)
 
 
-""" 
-
-
 cv = KFold(n_splits=10, shuffle=True, random_state=7)
 
 scores = cross_val_score(svc_clf, X_train, y_train,
@@ -80,12 +77,13 @@ scores = cross_val_score(svc_clf, X_train, y_train,
                          n_jobs=-1)
 
 print(scores,
-      np.mean(scores)) """
-"""
+      np.mean(scores)) 
+
 
 svc_clf.fit(X_train, y_train)
 
- 
+
+"""
 # submit
 
 submit_data = pd.read_csv('dataset/test.csv')
@@ -109,6 +107,4 @@ sub_df['PassengerId'] = submit_data['PassengerId']
 sub_df['Survived'] = pd.Series(pred)
 
 sub_df.to_csv('submit_svc.csv', index=False)
-
- 
 """
