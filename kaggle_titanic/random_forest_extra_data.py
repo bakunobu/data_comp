@@ -1,19 +1,16 @@
 """
-New features added.
-Params: 
-{'max_depth': 10, 'max_leaf_nodes': 8, 'min_samples_leaf': 3, 'min_samples_split': 15}
-
-The result is not really good
-0.72966
+Random forest grid search for extended data
 """
 
 
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score, KFold
 from sklearn.model_selection import GridSearchCV
+
+
 titanic_df = pd.read_csv('dataset/train.csv')
 
 
@@ -101,18 +98,18 @@ X_train, X_test, y_train, y_test = train_test_split(train_data, target,
                                                     test_size=0.25, random_state=0)
 
 
-"""
-param_dict = {'max_depth': range(5, 12),
-              'min_samples_split': range(15, 30),
-              'min_samples_leaf': range(3,10), 
-              'max_leaf_nodes': [5, 6, 7, 8, 9, 10]}
+
+param_dict = {'n_estimators': [10, 25, 50, 75, 100, 150, 200, 250],
+              'criterion': ['gini', 'entropy'],
+              'max_depth': range(1,11),
+              'min_samples_split': range(2,10),
+              'min_samples_leaf': range(1,10),
+              }
 
 
-tree_clf = DecisionTreeClassifier(criterion='gini',
-                                  splitter='best',
-                                  max_features='auto')
+forest_clf = RandomForestClassifier(n_jobs=-1)
 
-search = GridSearchCV(estimator=tree_clf,
+search = GridSearchCV(estimator=forest_clf,
                       param_grid=param_dict,
                       scoring='accuracy',
                       n_jobs=-1,
@@ -122,16 +119,17 @@ search = GridSearchCV(estimator=tree_clf,
 
 search.fit(X_train, y_train)
 
-
+print(search.best_params_)
 
     
 cv = KFold(n_splits=10, shuffle=True, random_state=7)
 
-scores = cross_val_score(tree_clf, X_train, y_train,
+scores = cross_val_score(forest_clf, X_train, y_train,
                          scoring='accuracy', cv=cv,
                          n_jobs=-1)
 
 print(scores, scores.mean())
+
 """
 tree_clf = DecisionTreeClassifier(criterion='gini',
                                   splitter='best',
@@ -178,3 +176,4 @@ sub_df['PassengerId'] = submit_df['PassengerId']
 sub_df['Survived'] = pd.Series(pred)
 
 sub_df.to_csv('submit.csv', index=False)
+"""
