@@ -1,5 +1,9 @@
 """
 Random forest grid search for extended data
+
+Best params
+{'criterion': 'entropy', 'max_depth': 5, 'min_samples_leaf': 3, 'min_samples_split': 2, 'n_estimators': 25}
+Score 0.78229 that is ~4155 position
 """
 
 
@@ -11,7 +15,7 @@ from sklearn.model_selection import cross_val_score, KFold
 from sklearn.model_selection import GridSearchCV
 
 
-titanic_df = pd.read_csv('dataset/train.csv')
+titanic_df = pd.read_csv('/home/bakunobu/competitions/data_comp/kaggle_titanic/dataset/train.csv')
 
 
 def make_df(input_df:pd.DataFrame, columns:list) -> pd.DataFrame:
@@ -98,7 +102,7 @@ X_train, X_test, y_train, y_test = train_test_split(train_data, target,
                                                     test_size=0.25, random_state=0)
 
 
-
+"""
 param_dict = {'n_estimators': [10, 25, 50, 75, 100, 150, 200, 250],
               'criterion': ['gini', 'entropy'],
               'max_depth': range(1,11),
@@ -108,7 +112,7 @@ param_dict = {'n_estimators': [10, 25, 50, 75, 100, 150, 200, 250],
 
 
 forest_clf = RandomForestClassifier(n_jobs=-1)
-
+print('start searching')
 search = GridSearchCV(estimator=forest_clf,
                       param_grid=param_dict,
                       scoring='accuracy',
@@ -121,7 +125,16 @@ search.fit(X_train, y_train)
 
 print(search.best_params_)
 
-    
+
+
+forest_clf = RandomForestClassifier(criterion='entropy',
+                                    max_depth=5,
+                                    min_samples_leaf=3,
+                                    min_samples_split=2,
+                                    n_estimators=25,
+                                    n_jobs=-1)
+
+  
 cv = KFold(n_splits=10, shuffle=True, random_state=7)
 
 scores = cross_val_score(forest_clf, X_train, y_train,
@@ -131,20 +144,20 @@ scores = cross_val_score(forest_clf, X_train, y_train,
 print(scores, scores.mean())
 
 """
-tree_clf = DecisionTreeClassifier(criterion='gini',
-                                  splitter='best',
-                                  max_features='auto',
-                                  max_depth=10,
-                                  max_leaf_nodes=8,
-                                  min_samples_leaf=3,
-                                  min_samples_split=15)
-
-tree_clf.fit(X_train, y_train)
 
 
+forest_clf = RandomForestClassifier(criterion='entropy',
+                                    max_depth=5,
+                                    min_samples_leaf=3,
+                                    min_samples_split=2,
+                                    n_estimators=25,
+                                    n_jobs=-1)
+
+forest_clf.fit(X_train, y_train)
 
 
-submit_df = pd.read_csv('dataset/test.csv')
+
+submit_df = pd.read_csv('/home/bakunobu/competitions/data_comp/kaggle_titanic/dataset/test.csv')
 
 
 submit_data = make_df(submit_df, ['Pclass', 'Sex', 'Age', 'Embarked',
@@ -165,7 +178,7 @@ submit_data.drop(columns=['Title'], inplace=True)
 
 submit_data = submit_data.fillna(-1)
 
-pred = tree_clf.predict(submit_data)
+pred = forest_clf.predict(submit_data)
 
 pred.astype(int)
 
@@ -175,5 +188,4 @@ sub_df = pd.DataFrame()
 sub_df['PassengerId'] = submit_df['PassengerId']
 sub_df['Survived'] = pd.Series(pred)
 
-sub_df.to_csv('submit.csv', index=False)
-"""
+sub_df.to_csv('submit_forest.csv', index=False)
